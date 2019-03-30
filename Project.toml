@@ -1,0 +1,17 @@
+name = "ConstituencyTrees"
+uuid = "bb729d96-d836-50c8-a5f6-280bdc4918fa"
+authors = ["David Ellison <davidehellison@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+AbstractTrees = "1520ce14-60c1-5f80-bbc7-55ef81b5835c"
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
+
+[compat]
+julia = "1.0"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
