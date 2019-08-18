@@ -16,10 +16,9 @@ using .Brackets
 """
     @tree_str(str)
 
-```jldoctest
-julia> tree"(S (NP (DT the) (N cat)) (VP (V ate)))
-todo lol
-```
+String macro for quickly reading trees.
+
+    tree"(S (NP (DT the) (N cat)) (VP (V ate)))
 """
 macro tree_str(str)
     return read_bracketed_tree(str)
