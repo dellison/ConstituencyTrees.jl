@@ -6,6 +6,8 @@ using Reexport
 export ConstituencyTree
 export print_bracketed, read_bracketed_tree, @tree_str
 
+export POS, Words
+
 include("trees.jl")
 
 include("brackets.jl")

@@ -59,3 +59,36 @@ function print_bracketed(io::IO, tree; depth = 0, indent = 2, multiline = true)
     print(io, ")")
 end
             
+
+
+# iteration
+
+abstract type ConstituencyTreeIterator end
+
+Base.IteratorSize(::Type{<:ConstituencyTreeIterator}) = Base.SizeUnknown()
+
+struct POSIterator{T} <: ConstituencyTreeIterator
+    iterator::T
+end
+Base.iterate(pos::POSIterator, state...) = iterate(pos.iterator, state...)
+
+"""
+   POS(tree)
+
+Iterator for part-of-speech tags.
+"""
+POS(tree::Tree) =
+    POSIterator(label(node) for node in PreOrderDFS(tree)
+                if length(children(node)) == 1 && isleaf(node.children[1]))
+
+struct WordsIterator{T} <: ConstituencyTreeIterator
+    iterator::T
+end
+Base.iterate(w::WordsIterator, state...) = iterate(w.iterator, state...)
+
+"""
+    Words(tree)
+
+Iterator for words in a sentence.
+"""
+Words(tree::Tree) = Words(Leaves(tree))

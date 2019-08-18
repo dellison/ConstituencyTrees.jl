@@ -7,6 +7,9 @@ using ConstituencyTrees, Test
         S = "(S (NP (DT the) (N cat)) (VP (V slept)))"
         tree = read_bracketed_tree(S)
         @test tree.node == "S"
+
+        @test collect(POS(tree)) == ["DT","N","V"]
+        @test collect(Words(tree)) == ["the","cat","slept"]
         
         t2 = tree"(S (NP (DT the) (N cat)) (VP (V slept)))"
         # @test tree == t2 # TODO
