@@ -1,4 +1,6 @@
-struct ConstituencyTree{T} #<: AbstractTree
+"""
+"""
+struct ConstituencyTree{T}
     node::T
     children
 end
@@ -11,8 +13,6 @@ Tree(node) = Tree(node, [])
 Tree(node::String, child::String) = Tree(node, [child])
 Tree(node, child::Tree, children...) = Tree(node, [child; children...])
 
-# defaultcharset() = TreeCharSet('├','└','│','─')
-
 AbstractTrees.children(tree::Tree) = tree.children
 AbstractTrees.printnode(io::IO, tree::Tree) = print(io, ifelse(isnothing(tree.node), "", tree.node))
 
@@ -20,7 +20,6 @@ isleaf(args...)           = true
 isleaf(tree::Tree)        =  isempty(tree.children)
 isterminal(tree::Tree)    =  isempty(tree.children)
 isnonterminal(tree::Tree) = !isempty(tree.children)
-
 
 label(tree::Tree{Nothing}) = ""
 label(tree::Tree{<:AbstractString}) = tree.node
