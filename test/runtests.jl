@@ -24,6 +24,13 @@ using ConstituencyTrees, Test
         @test collect(Leaves(tree)) == collect(Leaves(t2)) == split("the cat slept")
     end
 
+    @testset "Sentiment" begin
+        str = read(joinpath(@__DIR__, "data", "sentiment1.txt"), String)
+        tree_str = read_bracketed_tree(str)
+        tree_int = read_bracketed_tree(str, read_node = x -> parse(Int, x))
+        @test collect(Words(tree_str)) == collect(Words(tree_int))
+    end
+
     @testset "Brackets" begin
         S = "(S (NP (DT the) (N cat)) (VP (V slept)))"
         tree = read_bracketed_tree(S)

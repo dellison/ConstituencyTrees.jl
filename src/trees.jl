@@ -91,4 +91,4 @@ Base.iterate(w::WordsIterator, state...) = iterate(w.iterator, state...)
 
 Iterator for words in a sentence.
 """
-Words(tree::Tree) = Words(Leaves(tree))
+Words(tree::Tree) = WordsIterator(Leaves(tree))
