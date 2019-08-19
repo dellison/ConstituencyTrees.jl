@@ -1,0 +1,6 @@
+[deps]
+ConstituencyTrees = "bb729d96-d836-50c8-a5f6-280bdc4918fa"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+
+[compat]
+Documenter = "~0.23"
