@@ -16,14 +16,24 @@ Tree(node, child::Tree, children...) = Tree(node, [child; children...])
 AbstractTrees.children(tree::Tree) = tree.children
 AbstractTrees.printnode(io::IO, tree::Tree) = print(io, ifelse(isnothing(tree.node), "", tree.node))
 
-isleaf(args...)           = true
-isleaf(tree::Tree)        =  isempty(tree.children)
-isterminal(tree::Tree)    =  isempty(tree.children)
-isnonterminal(tree::Tree) = !isempty(tree.children)
+isleaf(args...)    = true
+isleaf(tree::Tree) = isempty(tree.children)
+
+istree(x) = false
+istree(::Tree) = true
+
+isterminal(tree::Tree)    =  length(tree.children) == 1 && isempty(tree.children[1].children)
+isnonterminal(tree::Tree) = !terminal(tree)
 
 label(tree::Tree{Nothing}) = ""
 label(tree::Tree{<:AbstractString}) = tree.node
 label(x::String) = x
+
+productions(tree) =
+    filter(p -> p[2] != (), map(PreOrderDFS(tree)) do node
+        label(node), label.(children(node))
+    end)
+
 
 import Base.getindex, Base.iterate
 Base.getindex(tree::ConstituencyTree, i) =
@@ -32,7 +42,8 @@ Base.iterate(tree::ConstituencyTree, state=1) = (tree[state], state+1)
 
 import Base.show
 function show(io::IO, tree::ConstituencyTree)
-    AbstractTrees.print_tree(io, tree)
+    print(io, typeof(tree), "\n")
+    print_bracketed(io, tree)
 end
 
 """

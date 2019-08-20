@@ -40,4 +40,16 @@ using ConstituencyTrees, Test
         S = read(joinpath(@__DIR__, "data", "pierre.mrg"), String)
         tree = read_bracketed_tree(S)
     end
+
+    @testset "Productions" begin
+        tree = tree"(S (NP (DT the) (N cat)) (VP (V slept)))"
+        @test productions(tree) == [
+            ("S", ["NP","VP"]),
+            ("NP", ["DT","N"]),
+            ("DT", ["the"]),
+            ("N", ["cat"]),
+            ("VP", ["V"]),
+            ("V", ["slept"])
+        ]
+    end
 end
