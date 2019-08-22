@@ -89,7 +89,7 @@ Base.iterate(pos::POSIterator, state...) = iterate(pos.iterator, state...)
 Iterator for part-of-speech tags.
 """
 POS(tree::Tree) =
-    POSIterator(label(node) for node in PreOrderDFS(tree)
+    POSIterator((label(node), node.children[1]) for node in PreOrderDFS(tree)
                 if length(children(node)) == 1 && isleaf(node.children[1]))
 
 struct WordsIterator{T} <: ConstituencyTreeIterator
