@@ -4,7 +4,7 @@ using Reexport
 @reexport using AbstractTrees
 
 export ConstituencyTree
-export print_bracketed, read_bracketed_tree, @tree_str
+export print_brackets, read_tree, @tree_str
 
 export POS, Words
 
@@ -18,12 +18,12 @@ using .Brackets
 """
     @tree_str(str)
 
-String macro for quickly reading trees.
+String macro for reading a constituency parse tree from bracketed format.
 
     tree"(S (NP (DT the) (N cat)) (VP (V ate)))"
 """
 macro tree_str(str)
-    return read_bracketed_tree(str)
+    return read_tree(str)
 end
 
 end # module

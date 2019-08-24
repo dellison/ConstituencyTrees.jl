@@ -1,6 +1,6 @@
 module Brackets
 
-export read_bracketed_tree
+export read_tree
 
 import ...Tree
 
@@ -73,13 +73,13 @@ end
 const READER = TreeReader()
 
 """
-    read_bracketed_tree(str)
+    read_tree(str)
 
 
 """
-function read_bracketed_tree end
-read_bracketed_tree(str; ks...) = READER.read(str; ks...)
-read_bracketed_tree(reader, str; ks...) = reader.read(str; ks...)
+function read_tree end
+read_tree(str; ks...) = READER.read(str; ks...)
+read_tree(reader, str; ks...) = reader.read(str; ks...)
 
 (reader::TreeReader)(data; ks...) = reader.read(data; ks...)
 

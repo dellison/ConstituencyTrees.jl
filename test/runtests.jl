@@ -5,14 +5,14 @@ using ConstituencyTrees, Test
 
     @testset "Trees" begin
         S = "(S (NP (DT the) (N cat)) (VP (V slept)))"
-        tree = read_bracketed_tree(S)
+        tree = read_tree(S)
         @test tree.node == "S"
 
         @test collect(POS(tree)) == [("DT","the"),("N","cat"),("V","slept")]
         @test collect(Words(tree)) == ["the","cat","slept"]
         
         t2 = tree"(S (NP (DT the) (N cat)) (VP (V slept)))"
-        # @test tree == t2 # TODO
+        @test tree == t2
 
         vals(x) = ConstituencyTrees.label.(collect(x))
         for (iter, nodes) in [(Leaves, "the cat slept"),
@@ -26,19 +26,19 @@ using ConstituencyTrees, Test
 
     @testset "Sentiment" begin
         str = read(joinpath(@__DIR__, "data", "sentiment1.txt"), String)
-        tree_str = read_bracketed_tree(str)
-        tree_int = read_bracketed_tree(str, read_node = x -> parse(Int, x))
+        tree_str = read_tree(str)
+        tree_int = read_tree(str, read_node = x -> parse(Int, x))
         @test collect(Words(tree_str)) == collect(Words(tree_int))
     end
 
     @testset "Brackets" begin
         S = "(S (NP (DT the) (N cat)) (VP (V slept)))"
-        tree = read_bracketed_tree(S)
+        tree = read_tree(S)
     end
 
     @testset "Pierre" begin
         S = read(joinpath(@__DIR__, "data", "pierre.mrg"), String)
-        tree = read_bracketed_tree(S)
+        tree = read_tree(S)
     end
 
     @testset "Productions" begin
