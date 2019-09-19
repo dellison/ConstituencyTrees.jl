@@ -41,7 +41,8 @@ function production(tree; nonterminal = identity, terminal = identity)
         return nonterminal(lhs), nonterminal.(rhs)
     end
 end
-productions(tree; ks...) = filter(p -> p[2] != (), map(p -> production(p;ks...), PreOrderDFS(tree)))
+productions(tree; ks...) =
+    filter(p -> p[2] != (), map(p -> production(p;ks...), PreOrderDFS(tree)))
 
 import Base.getindex, Base.iterate
 Base.getindex(tree::ConstituencyTree, i) =
@@ -62,27 +63,29 @@ import Base.==
 
 Print a constituency parse tree in bracketed format.
 """
-print_bracketed(tree; kw...) = print_bracketed(stdout, tree; kw...)
-function print_bracketed(io::IO, tree; depth = 0, indent = 2, multiline = true)
-    print("(", label(tree))
+print_bracketed(tree; kws...) = print_bracketed(stdout, tree; kws...)
+print_bracketed(io::IO, tree; kws...) = print(io, brackets(tree; kws...))
+
+function brackets(tree; depth = 0, indent = 2, multiline = true)
+    s = "(" * label(tree)
     if !isleaf(tree)
         for child in children(tree)
             if !isleaf(child)
                 if multiline
-                    print(io, "\n")
-                    print(io, repeat(" ", (depth + 1) * indent))
+                    s *= "\n"
+                    s *= repeat(" ", (depth + 1) * indent)
                 else
-                    print(io, " ")
+                    s *= " "
                 end
-                print_bracketed(io, child; depth = depth + 1, indent = indent, multiline = multiline)
+                kws = (depth = depth + 1, indent = indent, multiline = multiline)
+                s *= brackets(child; kws...)
             else
-                print(io, " ", label(child))
+                s *= " " * label(child)
             end
         end
     end
-    print(io, ")")
+    return s * ")"
 end
-            
 
 
 # iteration
