@@ -7,4 +7,5 @@ ConstituencyTrees
 @tree_str
 POS
 Words
+chomsky_normal_form
 ```

@@ -52,4 +52,94 @@ using ConstituencyTrees, Test
             ("V", ["slept"])
         ]
     end
+
+    @testset "Chomsky Normal Form" begin
+        t = tree"(A B C D)"
+
+        function testbrackets(t, str)
+            buf = IOBuffer()
+            Base.show(buf, t)
+            result = String(take!(buf))
+            ref = strip(replace(str, r"\s+"=>" "))
+            return result == "ConstituencyTree{String}" * ref
+        end
+
+        tree = tree"(A (B b) (C c) (D d))"
+
+        @test !testbrackets(tree, "()")
+
+        @test testbrackets(chomsky_normal_form(tree, RightFactored()),
+                           "(A (B b) (A|<C-D> (C c) (D d)))")
+
+        @test testbrackets(chomsky_normal_form(tree, LeftFactored()),
+                           "(A (A|<B-C> (B b) (C c)) (D d))")
+
+        pierre = tree"""
+        (S
+          (NP-SBJ
+            (NP (NNP Pierre) (NNP Vinken))
+            (, ,)
+            (ADJP (NP (CD 61) (NNS years)) (JJ old))
+            (, ,))
+          (VP
+            (MD will)
+            (VP
+              (VB join)
+              (NP (DT the) (NN board))
+              (PP-CLR
+                (IN as)
+                (NP
+                  (DT a)
+                  (JJ nonexecutive) (NN director)))
+              (NP-TMP (NNP Nov.) (CD 29))))
+          (. .))"""
+
+        testbrackets(chomsky_normal_form(pierre, RightFactored()),
+                     """
+                     (S
+                       (NP-SBJ
+                         (NP (NNP Pierre) (NNP Vinken))
+                         (NP-SBJ|<,-ADJP-,>
+                           (, ,)
+                           (NP-SBJ|<ADJP-,>
+                             (ADJP (NP (CD 61) (NNS years)) (JJ old))
+                             (, ,))))
+                       (S|<VP-.>
+                         (VP
+                           (MD will)
+                           (VP
+                             (VB join)
+                             (VP|<NP-PP-CLR-NP-TMP>
+                               (NP (DT the) (NN board))
+                               (VP|<PP-CLR-NP-TMP>
+                                 (PP-CLR
+                                   (IN as)
+                                   (NP
+                                     (DT a)
+                                     (NP|<JJ-NN> (JJ nonexecutive) (NN director))))
+                                 (NP-TMP (NNP Nov.) (CD 29))))))
+                         (. .)))
+                     """)
+
+        testbrackets(chomsky_normal_form(pierre, LeftFactored()),
+                     """
+                     (S
+                       (S|<NP-SBJ-VP>
+                         (NP-SBJ
+                           (NP-SBJ|<NP-,-ADJP>
+                             (NP-SBJ|<NP-,> (NP (NNP Pierre) (NNP Vinken)) (, ,))
+                             (ADJP (NP (CD 61) (NNS years)) (JJ old)))
+                           (, ,))
+                         (VP
+                           (MD will)
+                           (VP
+                             (VP|<VB-NP-PP-CLR>
+                               (VP|<VB-NP> (VB join) (NP (DT the) (NN board)))
+                               (PP-CLR
+                                 (IN as)
+                                 (NP (NP|<DT-JJ> (DT a) (JJ nonexecutive)) (NN director))))
+                             (NP-TMP (NNP Nov.) (CD 29)))))
+                       (. .))
+                     """)
+    end
 end

@@ -10,6 +10,7 @@ end
 
 const Tree = ConstituencyTree
 
+Tree{T}(label) where T = Tree{T}(label, [])
 # Tree(node) = ConstituencyTree{typeof(node)}(node, [])
 Tree() = Tree{Any}(nothing, [])
 Tree(node) = Tree(node, [])
@@ -41,13 +42,22 @@ function production(tree; nonterminal = identity, terminal = identity)
         return nonterminal(lhs), nonterminal.(rhs)
     end
 end
-productions(tree; ks...) =
-    filter(p -> p[2] != (), map(p -> production(p;ks...), PreOrderDFS(tree)))
+productions(tree; search = PreOrderDFS, ks...) =
+    filter(p -> p[2] != (), map(p -> production(p;ks...), search(tree)))
 
 import Base.getindex, Base.iterate
+# Base.getindex(tree::ConstituencyTree, i) =
+#     i == 1 ? tree.node : i == 2 ? tree.children : error(BoundsError, "oops $tree $i")
 Base.getindex(tree::ConstituencyTree, i) =
-    i == 1 ? tree.node : i == 2 ? tree.children : error(BoundsError, "oops $tree $i")
+    i == 1 ? tree.node :
+    1 <= i-1 <= length(children(tree)) ? tree.children[i-1] :
+    error(BoundsError, "oops $tree $i")
+# getindex(tree::ConstituencyTree, i) = children(tree)[i]
 Base.iterate(tree::ConstituencyTree, state=1) = (tree[state], state+1)
+
+import Base.keys, Base.pairs
+Base.keys(tree::ConstituencyTree) = [1, 2:length(children(tree))+1...]
+# Base.pairs(tree::ConstituencyTree) = 
 
 import Base.show
 function show(io::IO, tree::ConstituencyTree)
