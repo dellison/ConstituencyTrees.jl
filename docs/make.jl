@@ -11,4 +11,4 @@ makedocs(
     pages = ["Home" => "index.md"],
     doctest = true)
 
-# deploydocs(repo = "github.com/dellison/ConstituencyTrees.jl.git")
+deploydocs(repo = "github.com/dellison/ConstituencyTrees.jl.git")
