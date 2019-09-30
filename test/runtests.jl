@@ -22,6 +22,10 @@ using ConstituencyTrees, Test
         end
 
         @test collect(Leaves(tree)) == collect(Leaves(t2)) == split("the cat slept")
+
+        @test ConstituencyTrees.isterminal(ConstituencyTree("DT", "the"))
+        @test ConstituencyTrees.label(ConstituencyTree()) == nothing
+        @test ConstituencyTrees.label("x") == "x"
     end
 
     @testset "Sentiment" begin

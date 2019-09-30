@@ -11,27 +11,24 @@ end
 const Tree = ConstituencyTree
 
 Tree{T}(label) where T = Tree{T}(label, [])
-# Tree(node) = ConstituencyTree{typeof(node)}(node, [])
 Tree() = Tree{Any}(nothing, [])
 Tree(node) = Tree(node, [])
 Tree(node::String, child::String) = Tree(node, [child])
 Tree(node, child::Tree, children...) = Tree(node, [child; children...])
 
 AbstractTrees.children(tree::Tree) = tree.children
-AbstractTrees.printnode(io::IO, tree::Tree) = print(io, ifelse(isnothing(tree.node), "", tree.node))
+AbstractTrees.printnode(io::IO, tree::Tree) =
+    print(io, ifelse(isnothing(tree.node), "", tree.node))
 
 isleaf(args...)    = true
 isleaf(tree::Tree) = isempty(tree.children)
-
-istree(x) = false
-istree(::Tree) = true
 
 isterminal(x)             = true
 isterminal(tree::Tree)    = length(tree.children) == 1 && isempty(children(tree.children[1]))
 isnonterminal(tree::Tree) = !isterminal(tree)
 
 label(tree::Tree{Nothing}) = ""
-label(tree::Tree{<:AbstractString}) = tree.node
+label(tree::Tree) = tree.node
 label(x::String) = x
 
 function production(tree; nonterminal = identity, terminal = identity)
@@ -52,18 +49,14 @@ productions(tree; search = PreOrderDFS, ks...) =
     filter(p -> p[2] != (), map(p -> production(p;ks...), search(tree)))
 
 import Base.getindex, Base.iterate
-# Base.getindex(tree::ConstituencyTree, i) =
-#     i == 1 ? tree.node : i == 2 ? tree.children : error(BoundsError, "oops $tree $i")
 Base.getindex(tree::ConstituencyTree, i) =
     i == 1 ? tree.node :
     1 <= i-1 <= length(children(tree)) ? tree.children[i-1] :
-    error(BoundsError, "oops $tree $i")
-# getindex(tree::ConstituencyTree, i) = children(tree)[i]
+    error(BoundsError, "cannot access $tree at index $i")
 Base.iterate(tree::ConstituencyTree, state=1) = (tree[state], state+1)
 
-import Base.keys, Base.pairs
+import Base.keys
 Base.keys(tree::ConstituencyTree) = [1, 2:length(children(tree))+1...]
-# Base.pairs(tree::ConstituencyTree) = 
 
 import Base.show
 function show(io::IO, tree::ConstituencyTree)
