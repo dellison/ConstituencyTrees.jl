@@ -53,4 +53,5 @@ function cnf_label(parent, children, child_sep = "|", parent_sep = "^")
     return label(parent) * child_sep * "<" * join(label.(children), "-") * ">"
 end
 
+parent_label(parent, args...) = parent
 prime_label(parent, args...) = parent * "'"

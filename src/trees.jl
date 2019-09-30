@@ -42,6 +42,12 @@ function production(tree; nonterminal = identity, terminal = identity)
         return nonterminal(lhs), nonterminal.(rhs)
     end
 end
+
+"""
+    productions(tree; search = PreOrderDFS, nonterminal = identity, terminal = identity)
+
+todo
+"""
 productions(tree; search = PreOrderDFS, ks...) =
     filter(p -> p[2] != (), map(p -> production(p;ks...), search(tree)))
 
@@ -115,7 +121,11 @@ Base.iterate(pos::POSIterator, state...) = iterate(pos.iterator, state...)
 Iterator for part-of-speech tagged words.
 
 ```jldoctest
-julia> POS(read_tree("(S (NP (DT the) (N cat)) (VP ate))")
+julia> POS(tree"(S (NP (DT the) (N cat)) (VP (V ate)))") |> collect
+3-element Array{Any,1}:
+ ("DT", "the")
+ ("N", "cat")
+ ("V", "ate")
 ```
 """
 POS(tree::Tree) =
@@ -133,7 +143,11 @@ Base.iterate(w::WordsIterator, state...) = iterate(w.iterator, state...)
 Iterator for words in a sentence.
 
 ```jldoctest
-julia> POS(read_tree("(S (NP (DT the) (N cat)) (VP ate))")
+julia> Words(tree"(S (NP (DT the) (N cat)) (VP (V ate)))") |> collect
+3-element Array{Any,1}:
+ "the"
+ "cat"
+ "ate"
 ```
 """
 Words(tree::Tree) = WordsIterator(Leaves(tree))
