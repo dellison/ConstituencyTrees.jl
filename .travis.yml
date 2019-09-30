@@ -34,11 +34,3 @@ jobs:
                                                Pkg.instantiate()'
         - julia --project=docs/ docs/make.jl
       after_success: skip
-
-    # run the benchmarks
-    - stage: "Benchmarking"
-      julia: 1.1
-      os: linux
-      script:
-        - cd benchmarks/nltk
-        - julia build.jl
