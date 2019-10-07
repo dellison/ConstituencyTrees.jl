@@ -3,9 +3,9 @@ struct LeftFactored  <: Factorization end
 struct RightFactored <: Factorization end
 
 """
-    chomsky_normal_form(tree, factor, labelf)
+    chomsky_normal_form(tree, [factor, labelf])
 
-todo
+Convert a tree into chomsky normal form.
 """
 function chomsky_normal_form(tree, factor::Factorization=RightFactored(), labelf = nltk_factored_label)
     T, node, ch = typeof(tree), label(tree), children(tree)
@@ -24,13 +24,13 @@ function chomsky_normal_form(tree, factor::Factorization=RightFactored(), labelf
 end
 
 function factorize(tree, lf::LeftFactored, labelf)
-    ch = children(tree)
-    T, N = typeof(tree), length(ch)
+    T, ch = typeof(tree), children(tree)
+    N = length(ch)
     l_children = ch[1:N-1]
+    l_label = labelf(tree, l_children)
     if length(l_children) > 2
         l_children = [T(c...) for c in factorize(T(label(tree), l_children), lf, labelf)]
     end
-    l_label = labelf(tree, l_children)
     r = last(ch)
     return ((l_label, l_children), (label(r), children(r)))
 end
@@ -46,10 +46,6 @@ function factorize(tree, rf::RightFactored, labelf)
 end
 
 function nltk_factored_label(parent, children, child_sep = "|", parent_sep = "^")
-    return label(parent) * child_sep * "<" * join(label.(children), "-") * ">"
-end
-
-function cnf_label(parent, children, child_sep = "|", parent_sep = "^")
     return label(parent) * child_sep * "<" * join(label.(children), "-") * ">"
 end
 
