@@ -3,6 +3,14 @@ using ConstituencyTrees, Test
 @testset "ConstituencyTrees.jl" begin
     @test 1 == 1
 
+    function testbrackets(t, str)
+        buf = IOBuffer()
+        Base.show(buf, t)
+        result = String(take!(buf))
+        ref = strip(replace(str, r"\s+"=>" "))
+        return result == "ConstituencyTree{String}" * ref
+    end
+
     @testset "Trees" begin
         S = "(S (NP (DT the) (N cat)) (VP (V slept)))"
         tree = read_tree(S)
@@ -26,6 +34,21 @@ using ConstituencyTrees, Test
         @test ConstituencyTrees.isterminal(ConstituencyTree("DT", "the"))
         @test ConstituencyTrees.label(ConstituencyTree()) == nothing
         @test ConstituencyTrees.label("x") == "x"
+
+        buf = IOBuffer()
+        AbstractTrees.print_tree(buf, tree)
+        @test String(take!(buf)) ==
+            """
+            S
+            ├─ NP
+            │  ├─ DT
+            │  │  └─ "the"
+            │  └─ N
+            │     └─ "cat"
+            └─ VP
+               └─ V
+                  └─ "slept"
+            """
     end
 
     @testset "Sentiment" begin
@@ -59,14 +82,6 @@ using ConstituencyTrees, Test
 
     @testset "Chomsky Normal Form" begin
         t = tree"(A B C D)"
-
-        function testbrackets(t, str)
-            buf = IOBuffer()
-            Base.show(buf, t)
-            result = String(take!(buf))
-            ref = strip(replace(str, r"\s+"=>" "))
-            return result == "ConstituencyTree{String}" * ref
-        end
 
         tree = tree"(A (B b) (C c) (D d))"
 
