@@ -20,6 +20,8 @@ AbstractTrees.children(tree::Tree) = tree.children
 AbstractTrees.printnode(io::IO, tree::Tree) =
     print(io, ifelse(tree.node === nothing, "", tree.node))
 
+height(tree) = isleaf(tree) ? 1 : 1 + maximum(height.(children(tree)))
+
 isleaf(args...)    = true
 isleaf(tree::Tree) = isempty(tree.children)
 
@@ -80,12 +82,16 @@ function brackets(tree; depth = 0, indent = 2, multiline = true)
                     s *= "\n"
                     s *= repeat(" ", (depth + 1) * indent)
                 else
-                    s *= " "
+                    if !isempty(label(tree))
+                        s *= " "
+                    end
                 end
                 kws = (depth = depth + 1, indent = indent, multiline = multiline)
                 s *= brackets(child; kws...)
             else
-                s *= " " * label(child)
+                if !isempty(label(child))
+                    s *= " " * label(child)
+                end
             end
         end
     end

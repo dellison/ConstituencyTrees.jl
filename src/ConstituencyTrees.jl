@@ -11,9 +11,10 @@ export POS, Words
 export productions
 
 export chomsky_normal_form, LeftFactored, RightFactored
+export collapse_unary
 
 include("trees.jl")
-include("chomsky_normal_form.jl")
+include("transformations.jl")
 
 include("brackets.jl")
 using .Brackets

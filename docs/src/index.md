@@ -20,4 +20,5 @@ productions
 ## Transformations
 ```@docs
 chomsky_normal_form
+collapse_unary
 ```

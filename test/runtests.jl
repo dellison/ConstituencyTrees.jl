@@ -8,7 +8,7 @@ using ConstituencyTrees, Test
         Base.show(buf, t)
         result = String(take!(buf))
         ref = strip(replace(str, r"\s+"=>" "))
-        return result == "ConstituencyTree{String}" * ref
+        @test result == "ConstituencyTree{String}" * ref
     end
 
     @testset "Trees" begin
@@ -85,17 +85,15 @@ using ConstituencyTrees, Test
 
         tree = tree"(A (B b) (C c) (D d))"
 
-        @test !testbrackets(tree, "()")
-
-        @test testbrackets(chomsky_normal_form(tree, RightFactored()),
-                           "(A (B b) (A|<C-D> (C c) (D d)))")
+        testbrackets(chomsky_normal_form(tree, RightFactored()),
+                     "(A (B b) (A|<C-D> (C c) (D d)))")
 
         ftree = tree"(A (B b) (C c) (D d) (E e) (F f))"
-        @test testbrackets(chomsky_normal_form(ftree, LeftFactored()),
-                           "(A (A|<B-C-D-E> (A|<B-C-D> (A|<B-C> (B b) (C c)) (D d)) (E e)) (F f))")
+        testbrackets(chomsky_normal_form(ftree, LeftFactored()),
+                     "(A (A|<B-C-D-E> (A|<B-C-D> (A|<B-C> (B b) (C c)) (D d)) (E e)) (F f))")
 
-        @test testbrackets(chomsky_normal_form(ftree, RightFactored()),
-                           "(A (B b) (A|<C-D-E-F> (C c) (A|<D-E-F> (D d) (A|<E-F> (E e) (F f)))))")
+        testbrackets(chomsky_normal_form(ftree, RightFactored()),
+                     "(A (B b) (A|<C-D-E-F> (C c) (A|<D-E-F> (D d) (A|<E-F> (E e) (F f)))))")
 
         pierre = tree"""
         (S
@@ -117,52 +115,76 @@ using ConstituencyTrees, Test
               (NP-TMP (NNP Nov.) (CD 29))))
           (. .))"""
 
-        @test testbrackets(chomsky_normal_form(pierre, RightFactored()),
-                           """
-                           (S
-                           (NP-SBJ
-                               (NP (NNP Pierre) (NNP Vinken))
-                               (NP-SBJ|<,-ADJP-,>
-                               (, ,)
-                               (NP-SBJ|<ADJP-,>
-                                   (ADJP (NP (CD 61) (NNS years)) (JJ old))
-                                   (, ,))))
-                           (S|<VP-.>
-                               (VP
-                               (MD will)
-                               (VP
-                                   (VB join)
-                                   (VP|<NP-PP-CLR-NP-TMP>
-                                   (NP (DT the) (NN board))
-                                   (VP|<PP-CLR-NP-TMP>
-                                       (PP-CLR
-                                       (IN as)
-                                       (NP
-                                           (DT a)
-                                           (NP|<JJ-NN> (JJ nonexecutive) (NN director))))
-                                       (NP-TMP (NNP Nov.) (CD 29))))))
-                               (. .)))
-                           """)
+        testbrackets(chomsky_normal_form(pierre, RightFactored()),
+                     """
+                     (S
+                     (NP-SBJ
+                         (NP (NNP Pierre) (NNP Vinken))
+                         (NP-SBJ|<,-ADJP-,>
+                         (, ,)
+                         (NP-SBJ|<ADJP-,>
+                             (ADJP (NP (CD 61) (NNS years)) (JJ old))
+                             (, ,))))
+                     (S|<VP-.>
+                         (VP
+                         (MD will)
+                         (VP
+                             (VB join)
+                             (VP|<NP-PP-CLR-NP-TMP>
+                             (NP (DT the) (NN board))
+                             (VP|<PP-CLR-NP-TMP>
+                                 (PP-CLR
+                                 (IN as)
+                                 (NP
+                                     (DT a)
+                                     (NP|<JJ-NN> (JJ nonexecutive) (NN director))))
+                                 (NP-TMP (NNP Nov.) (CD 29))))))
+                         (. .)))
+                     """)
 
-        @test testbrackets(chomsky_normal_form(pierre, LeftFactored()),
-                           """
-                           (S
-                             (S|<NP-SBJ-VP>
-                               (NP-SBJ
-                                 (NP-SBJ|<NP-,-ADJP>
-                                   (NP-SBJ|<NP-,> (NP (NNP Pierre) (NNP Vinken)) (, ,))
-                                   (ADJP (NP (CD 61) (NNS years)) (JJ old)))
-                                 (, ,))
-                               (VP
-                                 (MD will)
-                                 (VP
-                                   (VP|<VB-NP-PP-CLR>
-                                     (VP|<VB-NP> (VB join) (NP (DT the) (NN board)))
-                                     (PP-CLR
-                                       (IN as)
-                                       (NP (NP|<DT-JJ> (DT a) (JJ nonexecutive)) (NN director))))
-                                   (NP-TMP (NNP Nov.) (CD 29)))))
-                             (. .))
-                           """)
+        testbrackets(chomsky_normal_form(pierre, LeftFactored()),
+                     """
+                     (S
+                       (S|<NP-SBJ-VP>
+                         (NP-SBJ
+                           (NP-SBJ|<NP-,-ADJP>
+                             (NP-SBJ|<NP-,> (NP (NNP Pierre) (NNP Vinken)) (, ,))
+                             (ADJP (NP (CD 61) (NNS years)) (JJ old)))
+                           (, ,))
+                         (VP
+                           (MD will)
+                           (VP
+                             (VP|<VB-NP-PP-CLR>
+                               (VP|<VB-NP> (VB join) (NP (DT the) (NN board)))
+                               (PP-CLR
+                                 (IN as)
+                                 (NP (NP|<DT-JJ> (DT a) (JJ nonexecutive)) (NN director))))
+                             (NP-TMP (NNP Nov.) (CD 29)))))
+                       (. .))
+                     """)
+    end
+
+    @testset "Collapse Unary" begin
+        testbrackets(collapse_unary(tree"(A (A a))"), "(A (A a))")
+        testbrackets(collapse_unary(tree"(A (A a))", collapse_root=true), "(A+A a)")
+        testbrackets(collapse_unary(tree"((A (A a)))", collapse_root=false), "((A+A a))")
+
+        pierre = tree"((S (NP-SBJ (NP (NNP Pierre) (NNP Vinken)) (, ,) (ADJP (NP (CD 61) (NNS years)) (JJ old)) (, ,)) (VP (MD will) (VP (VB join) (NP (DT the) (NN board)) (PP-CLR (IN as) (NP (DT a) (JJ nonexecutive) (NN director))) (NP-TMP (NNP Nov.) (CD 29)))) (. .)))"
+        testbrackets(collapse_unary(pierre, collapse_root=false),
+                     """((S
+                            (NP-SBJ
+                              (NP (NNP Pierre) (NNP Vinken))
+                              (, ,)
+                              (ADJP (NP (CD 61) (NNS years)) (JJ old))
+                              (, ,))
+                            (VP
+                              (MD will)
+                              (VP
+                                (VB join)
+                                (NP (DT the) (NN board))
+                                (PP-CLR (IN as) (NP (DT a) (JJ nonexecutive) (NN director)))
+                                (NP-TMP (NNP Nov.) (CD 29))))
+                            (. .)))
+                     """)
     end
 end

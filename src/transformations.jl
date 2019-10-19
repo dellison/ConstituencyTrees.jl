@@ -45,9 +45,37 @@ function factorize(tree, rf::RightFactored, labelf)
     return ((label(l), children(l)), (r_label, r_children))
 end
 
+"""
+    collapse_unary(tree, labelf=unary_label; collapse_pos=false, collapse_root=false)
+
+todo
+"""
+function collapse_unary(tree, labelf=unary_label; collapse_pos=false, collapse_root=false)
+    isleaf(tree) && return tree
+    T, n = typeof(tree), label(tree)
+    kw = (collapse_pos=collapse_pos, collapse_root=collapse_root)
+    if !collapse_root
+        f = x -> collapse_unary(x, labelf; collapse_pos=collapse_pos, collapse_root=true)
+        return T(n, f.(children(tree)))
+    elseif collapse_pos && isterminal(tree)
+        return children(tree)[1]
+    elseif length(children(tree)) == 1
+        if isterminal(tree)
+            return tree
+        else
+            node, ch = labelf(n, children(tree)[1]), children(children(tree)[1])
+            return collapse_unary(T(node, ch); kw...)
+        end
+    else
+        return T(n, [collapse_unary(c, labelf; kw...) for c in children(tree)])
+    end
+end
+
 function nltk_factored_label(parent, children, child_sep = "|", parent_sep = "^")
     return label(parent) * child_sep * "<" * join(label.(children), "-") * ">"
 end
 
 parent_label(parent, args...) = parent
 prime_label(parent, args...) = parent * "'"
+
+unary_label(parent, children) = join([label(parent), label(children)], "+")
