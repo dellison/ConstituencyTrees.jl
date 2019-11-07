@@ -4,7 +4,7 @@ using Reexport
 @reexport using AbstractTrees
 
 export ConstituencyTree
-export print_bracketed, read_tree, @tree_str
+export pprint, read_tree, @tree_str
 
 export POS, Words
 

@@ -8,7 +8,7 @@ ConstituencyTrees.jl is a Julia package for working with constituency trees of n
 ConstituencyTree
 @tree_str
 read_tree
-print_bracketed
+pprint
 ```
 
 ```@docs

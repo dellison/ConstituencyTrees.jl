@@ -60,18 +60,18 @@ Base.keys(tree::ConstituencyTree) = 1:length(children(tree))
 
 function Base.show(io::IO, tree::ConstituencyTree)
     print(io, typeof(tree))
-    print_bracketed(io, tree; multiline = false)
+    pprint(io, tree; multiline = false)
 end
 
 Base.:(==)(t1::Tree, t2::Tree) = label(t1) == label(t2) && children(t1) == children(t2)
 
 """
-    print_bracketed([io::IO,] tree; depth = 0, indent = 2, multiline = true)
+    pprint([io::IO,] tree; depth = 0, indent = 2, multiline = true)
 
 Print a constituency parse tree in bracketed format.
 """
-print_bracketed(tree; kws...) = print_bracketed(stdout, tree; kws...)
-print_bracketed(io::IO, tree; kws...) = print(io, brackets(tree; kws...))
+pprint(tree; kws...) = pprint(stdout, tree; kws...)
+pprint(io::IO, tree; kws...) = print(io, brackets(tree; kws...))
 
 function brackets(tree; depth = 0, indent = 2, multiline = true)
     s = "(" * label(tree)
