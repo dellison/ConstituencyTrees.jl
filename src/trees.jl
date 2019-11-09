@@ -32,7 +32,7 @@ label(tree::Tree{Nothing}) = ""
 label(tree::Tree) = tree.node
 label(x::String) = x
 
-function production(tree; nonterminal = identity, terminal = identity)
+function production(tree; nonterminal=identity, terminal=identity)
     lhs, rhs = label(tree), label.(children(tree))
     if isterminal(tree)
         return nonterminal(lhs), terminal.(rhs)
@@ -60,13 +60,13 @@ Base.keys(tree::ConstituencyTree) = 1:length(children(tree))
 
 function Base.show(io::IO, tree::ConstituencyTree)
     print(io, typeof(tree))
-    pprint(io, tree; multiline = false)
+    pprint(io, tree; multiline=false)
 end
 
 Base.:(==)(t1::Tree, t2::Tree) = label(t1) == label(t2) && children(t1) == children(t2)
 
 """
-    pprint([io::IO,] tree; depth = 0, indent = 2, multiline = true)
+    pprint([io::IO,] tree; depth=0, indent=2, multiline=true)
 
 Print a constituency parse tree in bracketed format.
 """
@@ -86,7 +86,7 @@ function brackets(tree; depth = 0, indent = 2, multiline = true)
                         s *= " "
                     end
                 end
-                kws = (depth = depth + 1, indent = indent, multiline = multiline)
+                kws = (depth=depth + 1, indent=indent, multiline=multiline)
                 s *= brackets(child; kws...)
             else
                 if !isempty(label(child))
