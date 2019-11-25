@@ -186,4 +186,8 @@ using ConstituencyTrees, Test
                             (. .)))
                      """)
     end
+
+    @testset "Treebanks" begin
+        tb = Treebank(joinpath(@__DIR__, "data", "pierre.mrg"))
+    end
 end

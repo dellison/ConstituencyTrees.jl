@@ -13,11 +13,15 @@ export productions
 export chomsky_normal_form, LeftFactored, RightFactored
 export collapse_unary
 
+export Treebank
+
 include("trees.jl")
 include("transformations.jl")
 
 include("brackets.jl")
 using .Brackets
+
+include("treebanks.jl")
 
 """
     @tree_str(str)
