@@ -62,11 +62,6 @@ using ConstituencyTrees, Test
         tree = read_tree(S)
     end
 
-    @testset "Pierre" begin
-        S = read(joinpath(@__DIR__, "data", "pierre.mrg"), String)
-        tree = read_tree(S)
-    end
-
     @testset "Productions" begin
         tree = tree"(S (NP (DT the) (N cat)) (VP (V slept)))"
         @test productions(tree) == [
@@ -161,6 +156,9 @@ using ConstituencyTrees, Test
                              (NP-TMP (NNP Nov.) (CD 29)))))
                        (. .))
                      """)
+
+        S = read(joinpath(@__DIR__, "data", "pierre.mrg"), String)
+        tree = read_tree(S)
     end
 
     @testset "Collapse Unary" begin
@@ -188,11 +186,18 @@ using ConstituencyTrees, Test
     end
 
     @testset "Treebanks" begin
-        tb = Treebank(joinpath(@__DIR__, "data", "pierre.mrg"))
+        file = joinpath(@__DIR__, "data", "pierre.mrg")
+        tb = Treebank(file)
         n = 0
         for tree in tb
             n += 1
         end
         @test n == 1
+        @test length(collect(tb)) == 1
+
+        tb2 = Treebank([file, file])
+        @test length(collect(tb2)) == 2
+        p1, p2 = Iterators.take(tb2, 2)
+        @test p1 == p2
     end
 end

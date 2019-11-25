@@ -84,7 +84,7 @@ mutable struct TreebankIterator
     r::TreeReader
 end
 function Base.iterate(t::TreebankIterator)
-    return iterate(t.r), 1
+    return iterate(t.r)
 end
 function Base.iterate(t::TreebankIterator, state)
     next = iterate(t.r, state)
