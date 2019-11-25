@@ -189,5 +189,10 @@ using ConstituencyTrees, Test
 
     @testset "Treebanks" begin
         tb = Treebank(joinpath(@__DIR__, "data", "pierre.mrg"))
+        n = 0
+        for tree in tb
+            n += 1
+        end
+        @test n == 1
     end
 end
