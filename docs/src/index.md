@@ -17,6 +17,12 @@ Words
 productions
 ```
 
+## Treebanks
+
+```@docs
+Treebank
+```
+
 ## Transformations
 ```@docs
 chomsky_normal_form
