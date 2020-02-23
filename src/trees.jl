@@ -42,12 +42,28 @@ function production(tree; nonterminal=identity, terminal=identity)
 end
 
 """
-    productions(tree; search = PreOrderDFS, nonterminal = identity, terminal = identity)
+    productions(tree; search=PreOrderDFS, nonterminal=identity, terminal=identity)
 
-todo
+Return a vector of (lhs, rhs) productions from a constituency parse tree.
+
+# Arguments
+
+- `tree`: the tree to search
+
+# Keywords
+
+- `nonterminal`: a function to call on nonterminal symbols.
+- `terminal`: a function to call on terminal symbols.
+
+# Returns
+
+- a `Vector` of (lhs, rhs) tuples
+
 """
-productions(tree; search = PreOrderDFS, ks...) =
-    filter(p -> p[2] != (), map(p -> production(p;ks...), search(tree)))
+function productions(tree; search=PreOrderDFS, ks...)
+    ps = [production(p; ks...) for p in search(tree)]
+    return [p for p in ps if p[2] != ()]
+end
 
 Base.getindex(tree::ConstituencyTree, i) =
     i == 1 ? tree.node :
@@ -66,14 +82,28 @@ end
 Base.:(==)(t1::Tree, t2::Tree) = label(t1) == label(t2) && children(t1) == children(t2)
 
 """
-    pprint([io::IO,] tree; depth=0, indent=2, multiline=true)
+    pprint([io::IO,] tree; indent=2, multiline=true)
 
 Print a constituency parse tree in bracketed format.
+
+# Arguments
+
+- `io`: `IO` stream to write the tree to
+- `tree`: the tree to search
+
+# Keywords
+
+- `multiline=true`: whether to include newlines in string representation
+- `indent=2`: how many characters of whitespace to use in indentation (ignored if `multiline` is `false`)
+
+# Returns
+
+- bracketed `String` representation of the parse tree
 """
 pprint(tree; kws...) = pprint(stdout, tree; kws...)
 pprint(io::IO, tree; kws...) = print(io, brackets(tree; kws...))
 
-function brackets(tree; depth = 0, indent = 2, multiline = true)
+function brackets(tree; depth=0, indent=2, multiline=true)
     s = "(" * label(tree)
     if !isleaf(tree)
         for child in children(tree)
@@ -111,7 +141,7 @@ end
 Base.iterate(pos::POSIterator, state...) = iterate(pos.iterator, state...)
 
 """
-   POS(tree)
+    POS(tree)
 
 Iterator for part-of-speech tagged words.
 
@@ -122,6 +152,14 @@ julia> POS(tree"(S (NP (DT the) (N cat)) (VP (V ate)))") |> collect
  ("N", "cat")
  ("V", "ate")
 ```
+
+# Arguments
+
+- `tree`: the tree to search
+
+# Returns
+
+- `POSIterator`- a lazy iterator over (POS, token) pairs
 """
 POS(tree::Tree) =
     POSIterator((label(node), node.children[1]) for node in PreOrderDFS(tree)
@@ -144,5 +182,13 @@ julia> Words(tree"(S (NP (DT the) (N cat)) (VP (V ate)))") |> collect
  "cat"
  "ate"
 ```
+
+# Arguments
+
+- `tree`: the tree to search
+
+# Returns
+
+- `WordsIterator`: an iterator over tokens
 """
 Words(tree::Tree) = WordsIterator(Leaves(tree))

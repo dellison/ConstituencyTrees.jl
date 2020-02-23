@@ -53,7 +53,7 @@ function TreeReader()
     )
 
     context = Automa.CodeGenContext()
-    reader = @eval function (data; read_node = identity, read_leaf = identity)
+    reader = @eval function (data; read_node=identity, read_leaf=identity)
         stack = Tree[Tree()]
         
         $(Automa.generate_init_code(context, tokenizer))
@@ -74,8 +74,9 @@ const READER = TreeReader()
 
 """
     read_tree(str)
+    read_tree(reader, string)
 
-
+Read a constituency parse tree from bracketed format.
 """
 function read_tree end
 read_tree(str; ks...) = READER.read(str; ks...)

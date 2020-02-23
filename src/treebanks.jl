@@ -43,16 +43,16 @@ struct Treebank
 end
 
 """
-    Treebank(corpus::String)
-    Treebank(corpus::Vector)
+    Treebank(corpus)
 
 A Treebank is an iterator over a corpus of trees in bracketed format.
 """
 function Treebank(corpus::String)
     if isfile(corpus)
-        Treebank([corpus])
+        return Treebank([corpus])
     elseif isdir(corpus)
-        # todo
+        f = x -> joinpath(corpus, x)
+        return Treebank(filter(isfile, f.(readdir(corpus))))
     else
         error("don't know how to read treebank '$corpus'")
     end

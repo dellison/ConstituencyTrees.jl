@@ -6,6 +6,16 @@ struct RightFactored <: Factorization end
     chomsky_normal_form(tree, factor=RightFactored(), labelf)
 
 Convert a tree into chomsky normal form.
+
+# Arguments
+
+- `tree`: the constituency tree to convert
+- `factor=RightFactored()`: can be `LeftFactored()` or `RightFactored()`
+- `labelf`: function (called like `labelf(tree, children)`)
+
+# Returns
+
+- a tree of the same type as its argument 
 """
 function chomsky_normal_form(tree, factor::Factorization=RightFactored(), labelf=nltk_factored_label)
     T, node, ch = typeof(tree), label(tree), children(tree)
@@ -13,8 +23,8 @@ function chomsky_normal_form(tree, factor::Factorization=RightFactored(), labelf
     cnf = t -> chomsky_normal_form(t, factor, labelf)
     if isleaf(tree) || isterminal(tree)
         return tree
-    elseif N == 1 # todo
-        return T(node, [cnf(ch[1])])
+    elseif N == 1
+        return cnf(ch[1])
     elseif N == 2
         return T(node, cnf.(ch))
     else
@@ -47,7 +57,21 @@ end
 """
     collapse_unary(tree, labelf=unary_label; collapse_pos=false, collapse_root=false)
 
-todo
+Transform a parse tree by collapsing all single-child nodes.
+
+# Arguments
+
+- `tree`: parse tree to transform
+- `labelf`: function called to create new label representing the collapsed nodes.
+
+# Keywords
+
+- `collapse_pos=false`: whether to collapse `(POS word)` nodes
+- `collapse_root=false`: whether to collapse the top-level root node
+
+# Returns
+
+- a transformed tree of the same type as its argument 
 """
 function collapse_unary(tree, labelf=unary_label; collapse_pos=false, collapse_root=false)
     isleaf(tree) && return tree
