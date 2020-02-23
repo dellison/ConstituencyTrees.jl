@@ -48,6 +48,7 @@ using ConstituencyTrees, Test
                └─ V
                   └─ "slept"
             """
+        @test ConstituencyTrees.height(tree) == 4
     end
 
     @testset "Sentiment" begin

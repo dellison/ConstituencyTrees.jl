@@ -65,15 +65,6 @@ function productions(tree; search=PreOrderDFS, ks...)
     return [p for p in ps if p[2] != ()]
 end
 
-Base.getindex(tree::ConstituencyTree, i) =
-    i == 1 ? tree.node :
-    1 <= i-1 <= length(children(tree)) ? tree.children[i-1] :
-    error(BoundsError, "cannot access $tree at index $i")
-
-Base.iterate(tree::ConstituencyTree, state=1) = (tree[state], state+1)
-
-Base.keys(tree::ConstituencyTree) = 1:length(children(tree))
-
 function Base.show(io::IO, tree::ConstituencyTree)
     print(io, typeof(tree))
     pprint(io, tree; multiline=false)
