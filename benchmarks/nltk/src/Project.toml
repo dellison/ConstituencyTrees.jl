@@ -1,6 +1,0 @@
-[deps]
-CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
-ConstituencyTrees = "bb729d96-d836-50c8-a5f6-280bdc4918fa"
-Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
-NLIDatasets = "400165cc-b992-11e9-18fb-114a7be5e8c2"
-PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
