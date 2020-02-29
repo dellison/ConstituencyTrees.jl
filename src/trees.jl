@@ -14,7 +14,6 @@ Tree{T}(label) where T = Tree{T}(label, [])
 Tree() = Tree{Any}(nothing, [])
 Tree(node) = Tree(node, [])
 Tree(node::String, child::String) = Tree(node, [child])
-Tree(node, child::Tree, children...) = Tree(node, [child; children...])
 
 AbstractTrees.children(tree::Tree) = tree.children
 AbstractTrees.printnode(io::IO, tree::Tree) =

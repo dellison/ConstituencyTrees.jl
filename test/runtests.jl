@@ -30,9 +30,11 @@ using ConstituencyTrees, Test
 
         @test collect(Leaves(tree)) == collect(Leaves(t2)) == split("the cat slept")
 
+        @test ConstituencyTrees.label(ConstituencyTree{String}("x")) == "x"
         @test ConstituencyTrees.isterminal(ConstituencyTree("DT", "the"))
         @test ConstituencyTrees.label(ConstituencyTree()) == nothing
         @test ConstituencyTrees.label("x") == "x"
+        @test ConstituencyTrees.label(Tree(nothing)) == ""
 
         buf = IOBuffer()
         AbstractTrees.print_tree(buf, tree)
@@ -200,5 +202,8 @@ using ConstituencyTrees, Test
         @test length(collect(tb2)) == 2
         p1, p2 = Iterators.take(tb2, 2)
         @test p1 == p2
+
+        tb = Treebank(joinpath(@__DIR__, "data"))
+        @test length(collect(tb)) == 2
     end
 end
